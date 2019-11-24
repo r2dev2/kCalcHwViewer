@@ -1,3 +1,4 @@
+import subprocess
 import getHW
 
 def getAssignments():
@@ -26,15 +27,39 @@ def getHwNums():
             if i[j] == ' ':
                 yeet = True
             fa += i[j]
-        a = flip(fa).replace(' ','')
+        a = flip(fa).replace(' ','')[:-1]
         nums.append(a)
     return nums
 
 def downloadFromK(hwnums):
-    print(nums)
+    subprocess.call("wget http://rkorsunsky.weebly.com/apcalculusbc.html", shell=True)
+    links = ["rkorsunsky.weebly.com" for i in hwnums]
+    for count, i in enumerate(hwnums):
+        if subprocess.call(f"cat apcalculusbc.html | grep -m1 '{i}'", shell = True) == 1:
+            continue
+        unparsed = subprocess.check_output(f"cat apcalculusbc.html | grep -m1 '{i}'", shell = True)
+        unparsed = unparsed.decode()
+        idx = unparsed.find("/upload")
+        if idx == -1:
+            continue
+        la = ''
+        yeet = False
+        for j in range(idx, len(unparsed)):
+            if yeet:
+                continue
+            if unparsed[j] == '"':
+                yeet = True
+                continue
+            la += unparsed[j]
+        links[count] += la
+    print(links)
+    subprocess.call("rm apcalculusbc.html", shell=True)
+
 
 def main():
-    getHwNums()
+    n = getHwNums()
+    downloadFromK(n)
+
 
 if __name__ == "__main__":
     main()
