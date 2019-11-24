@@ -52,11 +52,16 @@ def downloadFromK(hwnums):
                 continue
             la += unparsed[j]
         links[count] += la
+    links = [i for i in links if i != "rkorsunsky.weebly.com"]
     print(links)
-    subprocess.call("rm apcalculusbc.html", shell=True)
+    subprocess.call("rm apcalculusbc.html", shell = True)
+    for i in links:
+        subprocess.call(f"wget {i}", shell = True)
+    subprocess.call("mv *.pdf HW/", shell=True)
 
 
 def main():
+    subprocess.call("rm HW/*.pdf", shell=True)
     n = getHwNums()
     downloadFromK(n)
 
