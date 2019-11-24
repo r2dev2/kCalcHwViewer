@@ -4,7 +4,7 @@ import subprocess
 assignmentpattern = "/assignment/view"
 
 def getCredentials():
-    f = open("credentials.txt", 'r')
+    f = open(".credentials.txt", 'r')
     a = f.readlines()
     f.close()
     a = [i[:-1] for i in a]
@@ -49,7 +49,7 @@ def main():
     w = loginLoop(username, password)
     getHTML(w)
     a = getAssignments(assignmentpattern)
-    subprocess.call("pkill chrome", shell=True)
+    #subprocess.call("pkill chrome", shell=True)
     subprocess.call("rm schoolloopSource.txt", shell=True)
     return a
 
