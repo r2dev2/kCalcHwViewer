@@ -35,9 +35,9 @@ def downloadFromK(hwnums):
     subprocess.call("wget http://rkorsunsky.weebly.com/apcalculusbc.html", shell=True)
     links = ["rkorsunsky.weebly.com" for i in hwnums]
     for count, i in enumerate(hwnums):
-        if subprocess.call(f"cat apcalculusbc.html | grep -m1 '{i}'", shell = True) == 1:
+        if subprocess.call(f"cat apcalculusbc.html | grep -m1 'hw{i}'", shell = True) == 1:
             continue
-        unparsed = subprocess.check_output(f"cat apcalculusbc.html | grep -m1 '{i}'", shell = True)
+        unparsed = subprocess.check_output(f"cat apcalculusbc.html | grep -m1 'hw{i}'", shell = True)
         unparsed = unparsed.decode()
         idx = unparsed.find("/upload")
         if idx == -1:
@@ -53,7 +53,7 @@ def downloadFromK(hwnums):
             la += unparsed[j]
         links[count] += la
     links = [i for i in links if i != "rkorsunsky.weebly.com"]
-    print(links)
+    print("LINKS:", links)
     subprocess.call("rm apcalculusbc.html", shell = True)
     for i in links:
         subprocess.call(f"wget {i}", shell = True)
