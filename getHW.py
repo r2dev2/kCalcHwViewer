@@ -1,4 +1,4 @@
-from webbot import Browser
+import mechanize
 import subprocess
 
 assignmentpattern = "/assignment/view"
@@ -17,19 +17,20 @@ def grep(searchstr, filename):
             results.append(line)
     return results
 
-# returns web object
-def loginLoop(username, password):
-    web = Browser()
-    web.go_to("https://lynbrook.schoolloop.com/")
-    web.type(f"{username}\t{password}")
-    web.click("Login")
-    return web
+# Credit to @lithomas1 for mechanize
+def getHTML(username, password):
+    br = mechanize.Browser()
+    br.set_handle_robots(False)
+    br.addheaders = [("User-agent","Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.2.13) Gecko/20101206 Ubuntu/10.10 (maverick) Firefox/3.6.13")]
+    sign_in = br.open("http://lynbrook.schoolloop.com")
+    br.select_form(name = "form")
+    br["login_name"] = username
+    br["password"] = password
+    logged_in = br.submit()
+    req = br.open("http://lynbrook.schoolloop.com")
 
-def getHTML(web):
-    a = web.get_page_source()
-    s = open("schoolloopSource.txt", "w+")
-    s.write(a)
-    s.close()
+    with open("schoolloopSource.txt", 'wb') as fout:
+        fout.write(req.read())
 
 def getAssignments(assignmentpattern):
     unparsedassignments = grep(assignmentpattern, "schoolloopSource.txt")
@@ -46,11 +47,10 @@ def getAssignments(assignmentpattern):
 
 def main():
     username, password = getCredentials()
-    w = loginLoop(username, password)
-    getHTML(w)
+    getHTML(username, password)
     a = getAssignments(assignmentpattern)
-    #subprocess.call("pkill chrome", shell=True)
     subprocess.call("rm schoolloopSource.txt", shell=True)
+    print(a)
     return a
 
 if __name__ == "__main__":
