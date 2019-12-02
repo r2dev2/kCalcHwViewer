@@ -13,22 +13,27 @@ def flip(ostr):
     nlist = [ostr[len(ostr)-i-1] for i in range(len(ostr))]
     return ''.join(nlist)
 
+def findall(search, parent):
+    idxes = [i for i, ch in enumerate(parent) if ch == search]
+    return idxes
+
 def getHwNums():
     lua = getAssignments()
     print(f"Math assignments: {lua}")
     nums = []
     for i in lua:
-        idx = i.find(')')
-        fa = ''
-        yeet = False
-        for j in range(idx, -1, -1):
-            if yeet:
-                continue
-            if i[j] == ' ':
-                yeet = True
-            fa += i[j]
-        a = flip(fa).replace(' ','')[:-1]
-        nums.append(a)
+        idx = findall(')', i)
+        for k in idx:
+            fa = ''
+            yeet = False
+            for j in range(k, -1, -1):
+                if yeet:
+                    continue
+                if i[j] == ' ':
+                    yeet = True
+                fa += i[j]
+            a = flip(fa).replace(' ','')[:-1]
+            nums.append(a)
     return nums
 
 def downloadFromK(hwnums):
