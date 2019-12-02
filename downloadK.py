@@ -34,15 +34,41 @@ def getHwNums():
                 fa += i[j]
             a = flip(fa).replace(' ','')[:-1]
             nums.append(a)
+        idx = i.find("Wkst")
+        oidx = idx
+        if idx == -1:
+            continue
+        else:
+            idx -= 2
+        space = False
+        while not space:
+            print(i[idx])
+            if i[idx] == ' ':
+                space = True
+                continue
+            idx -= 1
+        print(i[oidx + 3])
+        print(i[idx: oidx + 3])
+        nums.append(i[idx: oidx + 3])
+    print("NUMMMMMSSSS", nums)
     return nums
 
 def downloadFromK(hwnums):
     subprocess.call("wget http://rkorsunsky.weebly.com/apcalculusbc.html", shell=True)
     links = ["rkorsunsky.weebly.com" for i in hwnums]
     for count, i in enumerate(hwnums):
-        if subprocess.call(f"cat apcalculusbc.html | grep -m1 'hw{i}'", shell = True) == 1:
+        endidx = i.find("Wk")
+        wksearch = i[:endidx-1] + "_wksht"
+        print("WKKKKKKK", wksearch)
+        if subprocess.call(f"cat apcalculusbc.html | grep -m1 'hw{i}'", shell = True) == 1 and subprocess.call(f"cat apcalculusbc.html | grep -m1 '{wksearch}'", shell = True) == 1:
+            
+            print("CONTINUING", wksearch)
             continue
-        unparsed = subprocess.check_output(f"cat apcalculusbc.html | grep -m1 'hw{i}'", shell = True)
+        if "W" not in i:
+            unparsed = subprocess.check_output(f"cat apcalculusbc.html | grep -m1 'hw{i}'", shell = True)
+        else:
+            print("SEARRCHING", wksearch)
+            unparsed = subprocess.check_output(f"cat apcalculusbc.html | grep -m1 '{wksearch}'", shell = True)
         unparsed = unparsed.decode()
         idx = unparsed.find("/upload")
         if idx == -1:
