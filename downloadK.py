@@ -60,15 +60,18 @@ def downloadFromK(hwnums):
         endidx = i.find("Wk")
         wksearch = i[:endidx-1] + "_wksht"
         print("WKKKKKKK", wksearch)
-        if subprocess.call(f"cat apcalculusbc.html | grep -m1 'hw{i}'", shell = True) == 1 and subprocess.call(f"cat apcalculusbc.html | grep -m1 '{wksearch}'", shell = True) == 1:
-            
+        noreghw = subprocess.call(f"cat apcalculusbc.html | grep -m1 'hw{i}'", shell=True) == 1
+        nowkst = subprocess.call(f"cat apcalculusbc.html | grep -m1 '{wksearch}'", shell=True) == 1
+        if noreghw and nowkst:
             print("CONTINUING", wksearch)
             continue
-        if "W" not in i:
+        if "W" not in i and not noreghw:
             unparsed = subprocess.check_output(f"cat apcalculusbc.html | grep -m1 'hw{i}'", shell = True)
-        else:
+        elif not nowkst:
             print("SEARRCHING", wksearch)
             unparsed = subprocess.check_output(f"cat apcalculusbc.html | grep -m1 '{wksearch}'", shell = True)
+        else:
+            continue
         unparsed = unparsed.decode()
         idx = unparsed.find("/upload")
         if idx == -1:
